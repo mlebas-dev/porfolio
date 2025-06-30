@@ -1,4 +1,4 @@
-//ajout du header et footer
+//ajout du header, footer et le modal
 document.addEventListener("DOMContentLoaded", function () {
   fetch("header.html")
     .then(response => {
@@ -25,6 +25,23 @@ document.addEventListener("DOMContentLoaded", function () {
     })
     .then(data => {
       document.getElementById("footer").innerHTML = data;
+    })
+    .catch(error => {
+      console.error("Erreur lors du chargement du fichier :", error);
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  fetch("modal.html")
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP : ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(data => {
+      document.getElementById("modal-container").innerHTML = data;
+      handleTheme()
     })
     .catch(error => {
       console.error("Erreur lors du chargement du fichier :", error);
@@ -58,14 +75,35 @@ const appearOnScroll = new IntersectionObserver((entries) => {
 
 faders.forEach(el => appearOnScroll.observe(el));
 
+//animation scroll-up -> se resserre
+document.addEventListener('scroll', () => {
+ const cards = document.querySelectorAll('.scroll-up');
+
+  cards.forEach(card => {
+    const rect = card.getBoundingClientRect();
+    const cardBottom = rect.bottom;
+
+    // Si le bas de la carte est a 1/3
+    var tier = window.screen.height / 3;
+    if (cardBottom > tier) {
+      card.style.transform = 'scaleY(1)';
+    } else {
+      // Plus le bas de la carte monte hors écran, plus on compresse
+      const progress = Math.min(Math.abs(cardBottom) / window.innerHeight, 1);
+      const scaleY = 1 - (progress * 0.1); // max 10% de compression
+      card.style.transform = `scaleY(${scaleY})`;
+    }
+  });
+});
+
 //animation parallax
 const parallax = document.querySelector('.parallax-image');
 
 window.addEventListener('scroll', () => {
   const scrollY = window.scrollY;
   const isMobile = window.innerWidth < 768;
-  const factor = isMobile ? 0.1 : 0.2;
-  const maxOffset = isMobile ? 20 : 50;
+  const factor = 0.2;
+  const maxOffset = isMobile ? 30 : 50;
 
   const offset = Math.min(scrollY * factor, maxOffset);
   if (parallax)
@@ -73,72 +111,54 @@ window.addEventListener('scroll', () => {
 });
 
 function getElementByAttribute(attr, value, root) {
-    root = root || document.body;
-    if(root.hasAttribute(attr) && root.getAttribute(attr) == value) {
-        return root;
+  root = root || document.body;
+  if (root.hasAttribute(attr) && root.getAttribute(attr) == value) {
+    return root;
+  }
+  var children = root.children,
+    element;
+  for (var i = children.length; i--;) {
+    element = getElementByAttribute(attr, value, children[i]);
+    if (element) {
+      return element;
     }
-    var children = root.children, 
-        element;
-    for(var i = children.length; i--; ) {
-        element = getElementByAttribute(attr, value, children[i]);
-        if(element) {
-            return element;
-        }
-    }
-    return null;
+  }
+  return null;
 }
 
 //changer le theme
-// Vérifie périodiquement si le bouton mode-toggle est présent (car le header est chargé dynamiquement)
-const modeInterval = setInterval(() => {
-  const modeToggle = document.getElementById('mode-toggle');
-  if (modeToggle) {
-    clearInterval(modeInterval);
-    const body = document.body;
+function handleTheme() {
+  // Récupère les radios
+  const defaultRadio = document.getElementById('default-mode-toggle');
+  const darkRadio = document.getElementById('dark-mode-toggle');
+  const contrastRadio = document.getElementById('high-contrast-toggle');
+  const body = document.body;
 
-    // Définir les modes et les classes CSS correspondantes
-    const modes = [
-      { name: 'Normal', class: '' }, // Mode par défaut, pas de classe
-      { name: 'Sombre', class: 'dark-mode' },
-      { name: 'Contrasté', class: 'high-contrast' }
-    ];
+  // Fonction pour appliquer la classe
+  function applyMode(mode) {
+    body.classList.remove('dark-mode', 'high-contrast');
+    if (mode === 'dark') body.classList.add('dark-mode');
+    if (mode === 'contrast') body.classList.add('high-contrast');
+    localStorage.setItem('displayMode', mode);
+  }
 
-    let currentModeIndex = 0; // 0 = Normal, 1 = Sombre, 2 = Contraste
+  // Écouteurs d'événements
+  if (defaultRadio && darkRadio && contrastRadio) {
+    defaultRadio.addEventListener('change', () => applyMode('default'));
+    darkRadio.addEventListener('change', () => applyMode('dark'));
+    contrastRadio.addEventListener('change', () => applyMode('contrast'));
 
-    // Récupérer le mode sauvegardé ou utiliser le mode normal par défaut
-    const savedModeIndex = localStorage.getItem('displayModeIndex');
-    if (savedModeIndex !== null && !isNaN(parseInt(savedModeIndex))) {
-      currentModeIndex = parseInt(savedModeIndex);
-    }
-
-    // Appliquer le mode initial au chargement de la page
-    applyMode(currentModeIndex);
-
-    modeToggle.addEventListener('click', () => {
-      // Passer au mode suivant
-      currentModeIndex = (currentModeIndex + 1) % modes.length;
-      applyMode(currentModeIndex);
-
-      // Sauvegarder le mode actuel dans le stockage local
-      localStorage.setItem('displayModeIndex', currentModeIndex);
-    });
-
-    function applyMode(index) {
-      // Supprimer toutes les classes de mode existantes
-      modes.forEach(mode => {
-        if (mode.class) {
-          body.classList.remove(mode.class);
-        }
-      });
-
-      // Ajouter la classe du mode actuel (si elle existe)
-      if (modes[index].class) {
-        body.classList.add(modes[index].class);
-      }
-
-      // Mettre à jour le texte du bouton
-      modeToggle.textContent = `Mode ${modes[index].name}`;
-      modeToggle.setAttribute('aria-label', `Changer le mode d'affichage actuel: ${modes[index].name}`);
+    // Appliquer le mode sauvegardé au chargement
+    const saved = localStorage.getItem('displayMode');
+    if (saved === 'dark') {
+      darkRadio.checked = true;
+      applyMode('dark');
+    } else if (saved === 'contrast') {
+      contrastRadio.checked = true;
+      applyMode('contrast');
+    } else {
+      defaultRadio.checked = true;
+      applyMode('default');
     }
   }
-}, 100);
+}
