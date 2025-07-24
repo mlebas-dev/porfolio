@@ -1,4 +1,8 @@
 @charset "UTF-8";
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("../assets/fonts/open_dyslexic/OpenDyslexic-Regular.otf") format("opentype");
+}
 /*!
 * Start Bootstrap - Personal v1.0.1 (https://startbootstrap.com/template-overviews/personal)
 * Copyright 2013-2023 Start Bootstrap
@@ -1848,7 +1852,7 @@ button:not(:disabled),
 .nav-link {
   display: block;
   padding: var(--bs-nav-link-padding-y) var(--bs-nav-link-padding-x);
-  font-size: 1rem;
+  font-size: var(--bs-body-font-size);
   font-weight: var(--bs-nav-link-font-weight);
   color: var(--bs-nav-link-color);
   text-decoration: none;
@@ -8104,13 +8108,18 @@ body.high-contrast .btn-outline-primary {
   border-color: var(--bs-primary);
 }
 
-body.high-contrast .btn-outline-primary:hover {
+body.high-contrast .btn-outline-primary:hover, body.high-contrast .footer .link-primary {
   color: var(--bs-primary-text);
 }
 
 body.high-contrast.bg-light, body.high-contrast .bg-light ,
 body.high-contrast .card, body.high-contrast .bg-white {
   background-color: var(--bs-body-bg) !important;
+}
+
+body.high-contrast .gradient-border {
+  background: linear-gradient(var(--bs-body-bg), var(--bs-body-bg)) padding-box,
+              linear-gradient(to bottom, var(--bs-body-color), var(--bs-secondary)) border-box;
 }
 
 body.dark-mode {
@@ -8140,4 +8149,17 @@ body.dark-mode .card, body.dark-mode .bg-white {
 
 body.dark-mode #mode-toggle {
   background-color: var(--bs-body-color);
+}
+
+body.dyslexic {
+  font-family: "OpenDyslexic";
+}
+
+body.zoom {
+  --bs-body-font-size: 1.5rem;
+  --bs-body-line-height: 2rem;
+}
+
+body.zoom .btn:not(#open-accessibility) {
+  font-size: 1.5rem !important;
 }

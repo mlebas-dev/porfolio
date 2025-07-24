@@ -42,6 +42,8 @@ document.addEventListener("DOMContentLoaded", function () {
     .then(data => {
       document.getElementById("modal-container").innerHTML = data;
       handleTheme()
+      handleFontDyslexic()
+      handleFontZoom()
     })
     .catch(error => {
       console.error("Erreur lors du chargement du fichier :", error);
@@ -159,6 +161,68 @@ function handleTheme() {
     } else {
       defaultRadio.checked = true;
       applyMode('default');
+    }
+  }
+}
+
+//changer la font
+function handleFontDyslexic() {
+  // Récupère les radios
+  const dysOffRadio = document.getElementById('font-dyslexic-off');
+  const dysOnRadio = document.getElementById('font-dyslexic-on');
+  const body = document.body;
+
+  // Fonction pour appliquer la classe
+  function applyMode(mode) {
+    body.classList.remove('dyslexic');
+    if (mode === 'dys-on') body.classList.add('dyslexic');
+    localStorage.setItem('fontDyslexic', mode);
+  }
+
+  // Écouteurs d'événements
+  if (dysOffRadio && dysOnRadio) {
+    dysOnRadio.addEventListener('change', () => applyMode('dys-on'));
+    dysOffRadio.addEventListener('change', () => applyMode('dys-off'));
+
+    // Appliquer le mode sauvegardé au chargement
+    const saved = localStorage.getItem('fontDyslexic');
+    if (saved === 'dys-on') {
+      dysOnRadio.checked = true;
+      applyMode('dys-on');
+    } else {
+      dysOffRadio.checked = true;
+      applyMode('dys-off');
+    }
+  }
+}
+
+//changer la font
+function handleFontZoom() {
+  // Récupère les radios
+  const zoomOffRadio = document.getElementById('font-zoom-off');
+  const zoomOnRadio = document.getElementById('font-zoom-on');
+  const body = document.body;
+
+  // Fonction pour appliquer la classe
+  function applyMode(mode) {
+    body.classList.remove('zoom');
+    if (mode === 'zoom-on') body.classList.add('zoom');
+    localStorage.setItem('fontZoom', mode);
+  }
+
+  // Écouteurs d'événements
+  if (zoomOffRadio && zoomOnRadio) {
+    zoomOnRadio.addEventListener('change', () => applyMode('zoom-on'));
+    zoomOffRadio.addEventListener('change', () => applyMode('zoom-off'));
+
+    // Appliquer le mode sauvegardé au chargement
+    const saved = localStorage.getItem('fontZoom');
+    if (saved === 'zoom-on') {
+      zoomOnRadio.checked = true;
+      applyMode('zoom-on');
+    } else {
+      zoomOffRadio.checked = true;
+      applyMode('zoom-off');
     }
   }
 }
