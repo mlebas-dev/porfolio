@@ -54,8 +54,10 @@
   --bs-body-bg: #fff;
   --bs-body-color: #111912;
   --bs-primary: #caa084;
-  --bs-primary-rgb: rgba(202, 160, 132, 1);
-  --bs-primary-light-rgb: rgba(247, 228, 215, 1);
+  --bs-primary-rgb: 202, 160, 132;
+  --bs-primary-light-rgb: 247, 228, 215;
+  --bs-secondary-rgb: 186, 167, 217;
+  --bs-secondary-light-rgb: 186, 167, 217;
   --bs-primary-text: #57351d;
   --bs-primary-hover: #BB8460;
   --bs-primary-text-hover: #2c170a;
@@ -331,6 +333,12 @@ select:disabled {
 
 [list]:not([type=date]):not([type=datetime-local]):not([type=month]):not([type=week]):not([type=time])::-webkit-calendar-picker-indicator {
   display: none !important;
+}
+
+.list-unstyled {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 0;
 }
 
 button,
@@ -3443,7 +3451,6 @@ button:not(:disabled),
   --bs-border-opacity: 1;
   border-color: rgba(var(--bs-secondary-rgb), var(--bs-border-opacity)) !important;
 }
-
 .border-success {
   --bs-border-opacity: 1;
   border-color: rgba(var(--bs-success-rgb), var(--bs-border-opacity)) !important;
@@ -4579,6 +4586,30 @@ button:not(:disabled),
 
 .bg-opacity-100 {
   --bs-bg-opacity: 1;
+}
+
+.opacity-0 {
+  opacity: 0;
+}
+
+.opacity-25 {
+  opacity: 0.25;
+}
+
+.opacity-50 {
+  opacity: 0.5;
+}
+
+.opacity-75 {
+  opacity: 0.75;
+}
+
+.opacity-80 {
+  opacity: 0.8;
+}
+
+.opacity-100 {
+  opacity: 1;
 }
 
 .bg-gradient {
@@ -7783,7 +7814,15 @@ html {
 
 .bg-profile {
   background: var(--bs-primary);
-  background: linear-gradient(140deg,var(--bs-primary-rgb) 0%, var(--bs-primary-light-rgb) 100%);
+  background: linear-gradient(140deg, rgb(var(--bs-primary-rgb)) 0%, rgb(var(--bs-primary-light-rgb)) 100%);
+}
+
+.bg-gradient-primary-to-secondary {
+  background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-secondary) 100%) !important;
+}
+
+.bg-gradient-secondary {
+  background: linear-gradient(135deg, var(--bs-secondary) 0%, var(--bs-secondary-hover) 100%) !important;
 }
 
 .rounded-4 {
@@ -7957,6 +7996,13 @@ html {
 .gradient-border {
   background: linear-gradient(var(--bs-body-bg), var(--bs-body-bg)) padding-box,
               linear-gradient(to bottom, var(--bs-secondary-text), var(--bs-secondary)) border-box;
+  border: 1px solid transparent;
+}
+
+
+.gradient-border-reverse {
+  background: linear-gradient(var(--bs-body-bg), var(--bs-body-bg)) padding-box,
+              linear-gradient(to bottom, var(--bs-secondary), var(--bs-secondary-text)) border-box;
   border: 1px solid transparent;
 }
 
@@ -8162,4 +8208,79 @@ body.zoom {
 
 body.zoom .btn:not(#open-accessibility) {
   font-size: 1.5rem !important;
+}
+
+/* Styles pour les cartes de prix */
+.pricing-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+.pricing-header {
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing-arrow {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 15px solid;
+}
+
+.pricing-header.bg-gradient-primary-to-secondary .pricing-arrow {
+  border-top-color: var(--bs-primary);
+}
+
+.pricing-header.bg-gradient-secondary .pricing-arrow {
+  border-top-color: var(--bs-secondary);
+}
+
+.pricing-header-purple {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  text-align: center;
+  padding: 1.5rem;
+  position: relative;
+}
+
+.pricing-header-purple .pricing-arrow {
+  border-top-color: #667eea;
+}
+
+.pricing-price-purple {
+  color: #667eea !important;
+}
+
+.btn-gradient-purple {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border: none !important;
+  color: white !important;
+}
+
+.btn-gradient-purple:hover {
+  background: linear-gradient(135deg, #5568d3 0%, #653a8f 100%) !important;
+  color: white !important;
+}
+
+a.no-animation,
+.btn.no-animation {
+  box-shadow: none !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+a.no-animation:hover,
+.btn.no-animation:hover {
+  transform: none !important;
+  box-shadow: none !important;
 }
